@@ -66,45 +66,46 @@ Every custom theme bases on an SAP theme (e.g. SAP Horizon or SAP Quartz)
 ### Prepare your Preview Page
 
 Before you can add your own application as a preview page it must undergo preparation to fit for the theming process. Your application should utilize the SAP theming parameters and respond to the Post Message sent from the UI theme designer when any parameter is modified.
+
 The theming parameters are accessible through the open-source [theming-base-content](https://www.npmjs.com/package/@sap-theming/theming-base-content), which presents them as [CSS Custom Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties). For each theme there is a [css-variables.css](https://github.com/SAP/theming-base-content/blob/2a38d0156f3d53fde0301b777f8d856266e70d35/content/Base/baseLib/sap_horizon/css_variables.css) file containing all parameter definitions. 
 For the purposes of this tutorial, we will leverage the unpkg.com service and enable the direct referencing of npm packages via URL.
-<br>
-Considering a minimal HTML example, we just add the following element:
-```HTML
-<link rel="stylesheet" href="https://unpkg.com/@sap-theming/theming-base-content/content/Base/baseLib/sap_horizon/css_variables.css">
-```
-As we already loaded the _css_variables.css_ in our HTML example we can directly start using them:
-<!-- <body style="background-color: var(--sapBackgroundColor)"></body> -->
-```CSS
-body {
-    background-color: var(--sapBackgroundColor);
-}
-``````
 
-
-Whenever a theming parameter is altered in the UI theme designer, a Post Message will be generated containing the _css-variables.css_, including the updated parameters.
-<br>
-The Post message containing an object with the following structure:
-```JSON
-{
-    "type": "theming-ui:theme-changed",
-    "cssVariables": "<ALL CSS VARIABLES WITH CURRENT VALUE AS STRING>"
-}
-```
-Furthermore, a script must be implemented to react to the Post Message sent by the UI theme designer and overwrite the style of the loaded base theme.
-<br>
-To do so we add an additional style tag with the id **cssVariablesStyleTag**:
-```html
-<style id="cssVariablesStyleTag"></style>
-```
-And the script part can look something like this:
-```JavaScript
-addEventListener('message', ({data}) => {
-    if (data.type === 'theming-ui:theme-changed') {
-        cssVariablesStyleTag.textContent = data.cssVariables;
+1. Considering a minimal HTML example, we just add the following element:
+    ```HTML
+    <link rel="stylesheet" href="https://unpkg.com/@sap-theming/theming-base-content/content/Base/baseLib/sap_horizon/css_variables.css">
+    ```
+    As we already loaded the _css_variables.css_ in our HTML example we can directly start using them:
+    <!-- <body style="background-color: var(--sapBackgroundColor)"></body> -->
+    ```CSS
+    body {
+        background-color: var(--sapBackgroundColor);
     }
-});
-```
+    ``````
+
+
+2. Whenever a theming parameter is altered in the UI theme designer, a Post Message will be generated containing the _css-variables.css_, including the updated parameters.
+
+    The Post message containing an object with the following structure:
+    ```JSON
+    {
+        "type": "theming-ui:theme-changed",
+        "cssVariables": "<ALL CSS VARIABLES WITH CURRENT VALUE AS STRING>"
+    }
+    ```
+3. Furthermore, a script must be implemented to react to the Post Message sent by the UI theme designer and overwrite the style of the loaded base theme.
+
+    To do so we add an additional style tag with the id **cssVariablesStyleTag**:
+    ```html
+    <style id="cssVariablesStyleTag"></style>
+    ```
+4. The script part can look something like this:
+    ```JavaScript
+    addEventListener('message', ({data}) => {
+        if (data.type === 'theming-ui:theme-changed') {
+            cssVariablesStyleTag.textContent = data.cssVariables;
+        }
+    });
+    ```
 The script listens to incoming Post Mesages and checks the data for the type **`theming-ui:theme-changed`**. Then it sets the text content of the style tag **`cssVariablesStyleTag`** to all the CSS variables coming from the Post Message. 
 
 
@@ -120,9 +121,9 @@ In the UI theme designer you can select between different builds in preview page
 5. A popup will inform you that your preview page is accessed cross origin. Click **OK**.
 6. Click now in the left area under **Applications** on your new preview page.
 
-Your preview page is now open and you can start customising. Any modifications made will be immediately reflected on your preview page.
+Your preview page is now open and you can start customizing. Any modifications made will immediately be reflected on your preview page.
 
->**Note:** You have to host the application on your own! The UI theme designer only load the content of your application. 
+>**Note:** You have to host the application on your own! The UI theme designer only loads the content of your application. 
 
 
 
